@@ -1,10 +1,13 @@
+"""Module of schemas of jobs"""
+
 import datetime
-from typing import Optional
-from pydantic import BaseModel
+
+from pydantic import BaseModel,validator
 
 
 class JobSchema(BaseModel):
-    id: int 
+    """ Shema of model """
+    id: int
     user_id: int
     title: str
     discription: str
@@ -13,15 +16,40 @@ class JobSchema(BaseModel):
     is_active: bool
     created_at: datetime.datetime
 
-    class Config: #уточнить
+    class Config:
         orm_mode = True
 
-class JobtoSchema(BaseModel):
+
+class JobCreateSchema(BaseModel):
+    """ Shema to create model """
     title: str
     discription: str
     salary_from: int
     salary_to: int
     is_active: bool
-    
+
     class Config:
         orm_mode = True
+
+    @validator('salary_to')
+    def salary_match(cls, v, values, **kwargs):
+        if v < values['salary_from']:
+            raise ValueError('Некорректные данные по зарплате: зарплата сверху {} меньше чем снизу {}'.format(v,values['salary_from']))
+        return v
+
+class JobUpdateSchema(BaseModel):
+    """ Shema to update model """
+    title: str
+    discription: str
+    salary_from: int
+    salary_to: int
+    is_active: bool
+
+    class Config:
+        orm_mode = True
+
+    @validator('salary_to')
+    def salary_match(cls, v, values, **kwargs):
+        if v < values['salary_from']:
+            raise ValueError('Некорректные данные по зарплате: зарплата сверху {} меньше чем снизу {}'.format(v,values['salary_from']))
+        return v
