@@ -3,7 +3,9 @@ from fastapi import FastAPI
 
 from routers import auth_router, jobs_router, responses_router, user_router
 
-app = FastAPI()
+app = FastAPI(
+    title="ХХ БАШ ХХ"
+)
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(jobs_router)
