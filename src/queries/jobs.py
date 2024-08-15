@@ -1,46 +1,47 @@
-from models import Job
-from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import JobSchema,JobtoSchema
 from typing import List, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
+
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from models import Job
+from schemas import JobCreateSchema
 
 
-async def get_all(db: AsyncSession, limit: int = 100, skip: int = 0) -> List[JobSchema]:
-    query = select(Job).limit(limit).offset(skip)
-    res = await db.execute(query)
-    return res.scalars().all()
+async def get_all(db: AsyncSession, limit: int = 100, skip: int = 0) -> List[Job]:
+    querie = select(Job).limit(limit).offset(skip)
+    jobs_result = await db.execute(querie)
+    return jobs_result.scalars().all()
 
 
-async def get_by_id(db: AsyncSession, id: int) -> JobSchema:
-    query = select(Job).where(Job.id == id)
-    res = await db.execute(query)
-    return res.scalars().first()
+async def get_by_id(db: AsyncSession, job_id: int) -> Optional[Job]:
+    querie = select(Job).where(Job.id == job_id)
+    job_result = await db.execute(querie)
+    return job_result.scalars().first()
 
 
-async def create(db: AsyncSession, job_schema: JobtoSchema,curent_user_id) -> Job:
+async def create(db: AsyncSession, job_schema: JobCreateSchema, curent_user_id) -> Optional[Job]:
     job = Job(
         user_id=curent_user_id,
         title=job_schema.title,
         discription=job_schema.discription,
         salary_from=job_schema.salary_from,
         salary_to=job_schema.salary_to,
-        is_active=job_schema.is_active
+        is_active=job_schema.is_active,
     )
     db.add(job)
     await db.commit()
     await db.refresh(job)
     return job
 
-async def update(db: AsyncSession, job: Job) -> Job:
-    db.add(job)
-    await db.commit()
-    await db.refresh(job)
-    return job
 
-async def delete (db: AsyncSession, job: Job) -> Job:
-    id=job.id
-    await db.delete(job)
+async def update(db: AsyncSession, update_job: Job) -> Optional[Job]:
+    db.add(update_job)
     await db.commit()
-    res=await get_by_id(db=db,id=id)
-    return res
+    await db.refresh(update_job)
+    return await get_by_id(db=db, job_id=update_job.id)
+
+
+async def delete(db: AsyncSession, delete_job: Job) -> Optional[Job]:
+    await db.delete(delete_job)
+    await db.commit()
+    return delete_job
