@@ -1,12 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.security import (
-    create_access_token,
-    create_refresh_token,
-    decode_access_token,
-    verify_password,
-)
+from core.security import create_token, decode_access_token, verify_password
 from dependencies import get_db
 from queries import user as user_queries
 from schemas import LoginSchema, TokenSchema
@@ -25,8 +20,8 @@ async def login(login: LoginSchema, db: AsyncSession = Depends(get_db)):
         )
 
     return TokenSchema(
-        access_token=create_access_token({"sub": user.email}),
-        refresh_token=create_refresh_token({"sub": user.email}),
+        access_token=create_token({"sub": user.email}, "access"),
+        refresh_token=create_token({"sub": user.email}, "refresh"),
         token_type="Bearer",
     )
 
@@ -42,7 +37,7 @@ async def refresh(token: str, db: AsyncSession = Depends(get_db)):
         )
 
     return TokenSchema(
-        access_token=create_access_token({"sub": user.email}),
-        refresh_token=create_refresh_token({"sub": user.email}),
+        access_token=create_token({"sub": user.email}, "access"),
+        refresh_token=create_token({"sub": user.email}, "refresh"),
         token_type="Bearer",
     )

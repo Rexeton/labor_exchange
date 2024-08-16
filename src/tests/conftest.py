@@ -7,7 +7,7 @@ from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from core.security import create_access_token, create_refresh_token
+from core.security import create_token
 from db_settings import SQLALCHEMY_DATABASE_URL_TEST as SQLALCHEMY_DATABASE_URL
 from dependencies import get_db
 from fixtures.jobs import JobFactory
@@ -63,8 +63,8 @@ async def current_user(sa_session: AsyncSession):
 @pytest_asyncio.fixture()
 async def access_token(current_user):
     token = TokenSchema(
-        access_token=create_access_token({"sub": current_user.email}),
-        refresh_token=create_refresh_token({"sub": current_user.email}),
+        access_token=create_token({"sub": current_user.email}, "access"),
+        refresh_token=create_token({"sub": current_user.email}, "refresh"),
         token_type="Bearer",
     )
     return token
