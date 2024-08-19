@@ -42,6 +42,15 @@ class UserUpdateSchema(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "examples": [
+                {
+                    "name": "Vitalii",
+                    "email": "dasdwq@refasd.com",
+                    "is_company": False,
+                }
+            ]
+        }
 
 
 class UserCreateSchema(BaseModel):
@@ -55,6 +64,17 @@ class UserCreateSchema(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "examples": [
+                {
+                    "name": "Vitalii",
+                    "email": "dasdwq@refasd.com",
+                    "password": "qweqweqwe",
+                    "password2": "qweqweqwe",
+                    "is_company": False,
+                }
+            ]
+        }
 
     @validator("password2")
     def password_match(cls, v, values, **kwargs):
