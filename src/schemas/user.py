@@ -31,6 +31,17 @@ class UserGetSchema(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": [
+                {
+                    "id": 1,
+                    "name": "Vitalii",
+                    "email": "user@example.com",
+                    "is_company": False,
+                    "created_at": "2024-08-06T20:41:48.521Z",
+                }
+            ]
+        }
 
 
 class UserUpdateSchema(BaseModel):
@@ -43,10 +54,10 @@ class UserUpdateSchema(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "examples": [
+            "example": [
                 {
                     "name": "Vitalii",
-                    "email": "dasdwq@refasd.com",
+                    "email": "user@example.com",
                     "is_company": False,
                 }
             ]
@@ -65,12 +76,12 @@ class UserCreateSchema(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "examples": [
+            "example": [
                 {
                     "name": "Vitalii",
-                    "email": "dasdwq@refasd.com",
-                    "password": "qweqweqwe",
-                    "password2": "qweqweqwe",
+                    "email": "user@example.com",
+                    "password": "stringst",
+                    "password2": "stringst",
                     "is_company": False,
                 }
             ]
