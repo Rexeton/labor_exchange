@@ -198,8 +198,8 @@ async def test_delete_response_job_id_norm(client_app, current_user, sa_session)
     job = await Conveyor.create_job(sa_session, emploer)
     current_user = await Conveyor.current_to_worker(sa_session, current_user)
     await Conveyor.create_response(sa_session, current_user, job)
-    response_update = await client_app.delete(f"/responses/jobs/{job.id}")
-    assert response_update.status_code == 200
+    response_delete = await client_app.delete(f"/responses/jobs/{job.id}")
+    assert response_delete.status_code == 200
 
 
 @pytest.mark.asyncio
@@ -209,8 +209,8 @@ async def test_delete_response_job_id_by_company(client_app, current_user, sa_se
     current_user = await Conveyor.current_to_worker(sa_session, current_user)
     await Conveyor.create_response(sa_session, current_user, job)
     current_user = await Conveyor.current_to_company(sa_session, current_user)
-    response_update = await client_app.delete(f"/responses/jobs/{job.id}")
-    assert response_update.status_code == 403
+    response_delete = await client_app.delete(f"/responses/jobs/{job.id}")
+    assert response_delete.status_code == 403
 
 
 @pytest.mark.asyncio
@@ -218,8 +218,8 @@ async def test_delete_response_job_id_by_no_response(client_app, current_user, s
     emploer = await Conveyor.create_emploer(sa_session)
     job = await Conveyor.create_job(sa_session, emploer)
     current_user = await Conveyor.current_to_worker(sa_session, current_user)
-    response_update = await client_app.delete(f"/responses/jobs/{job.id}")
-    assert response_update.status_code == 204
+    response_delete = await client_app.delete(f"/responses/jobs/{job.id}")
+    assert response_delete.status_code == 204
 
 
 @pytest.mark.asyncio
@@ -228,8 +228,8 @@ async def test_delete_response_id_norm(client_app, current_user, sa_session):
     job = await Conveyor.create_job(sa_session, emploer)
     current_user = await Conveyor.current_to_worker(sa_session, current_user)
     response = await Conveyor.create_response(sa_session, current_user, job)
-    response_update = await client_app.delete(f"/responses/{response.id}")
-    assert response_update.status_code == 200
+    response_delete = await client_app.delete(f"/responses/{response.id}")
+    assert response_delete.status_code == 200
 
 
 @pytest.mark.asyncio
@@ -239,15 +239,15 @@ async def test_delete_response_id_by_company(client_app, current_user, sa_sessio
     current_user = await Conveyor.current_to_worker(sa_session, current_user)
     response = await Conveyor.create_response(sa_session, current_user, job)
     current_user = await Conveyor.current_to_company(sa_session, current_user)
-    response_update = await client_app.delete(f"/responses/{response.id}")
-    assert response_update.status_code == 403
+    response_delete = await client_app.delete(f"/responses/{response.id}")
+    assert response_delete.status_code == 403
 
 
 @pytest.mark.asyncio
 async def test_delete_response_id_empty(client_app, current_user, sa_session):
     current_user = await Conveyor.current_to_worker(sa_session, current_user)
-    response_update = await client_app.delete("/responses/20")
-    assert response_update.status_code == 204
+    response_delete = await client_app.delete("/responses/20")
+    assert response_delete.status_code == 204
 
 
 @pytest.mark.asyncio
@@ -256,5 +256,5 @@ async def test_delete_response_id_not_my(client_app, current_user, sa_session):
     job = await Conveyor.create_job(sa_session, current_user)
     worker = await Conveyor.create_woker(sa_session)
     response = await Conveyor.create_response(sa_session, worker, job)
-    response_update = await client_app.delete(f"/responses/{response.id}")
-    assert response_update.status_code == 403
+    response_delete = await client_app.delete(f"/responses/{response.id}")
+    assert response_delete.status_code == 403

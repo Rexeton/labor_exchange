@@ -140,7 +140,7 @@ async def delete_response(
         db=db, job_id=job_id, user_id=current_user.id
     )
     Real_Validation.element_not_found(respose_to_delete)
-    delete_responses = await responses_queries.delete(db=db, response=respose_to_delete)
+    delete_responses = await responses_queries.delete(db=db, response=respose_to_delete[0])
     return ResponsesSchema(**delete_responses.__dict__)
 
 

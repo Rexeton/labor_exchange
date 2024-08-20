@@ -1,16 +1,16 @@
-from schemas.status_code_valid import Response_message
+from schemas.status_code_valid import ResponseMessage
 
 responses_204 = {
     204: {"description": "Zero rezult"},
 }
 responses_403 = {
-    403: {"model": Response_message, "description": "You have not power here"},
+    403: {"model": ResponseMessage, "description": "You have not power here"},
 }
 responses_422 = {
-    422: {"model": Response_message, "description": "Some proplem with validation"},
+    422: {"model": ResponseMessage, "description": "Some proplem with validation"},
 }
 responses_498 = {
-    498: {"model": Response_message, "description": "Special problem"},
+    498: {"model": ResponseMessage, "description": "Special problem"},
 }
 responses_get_responses = {
     **responses_204,

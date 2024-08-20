@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 
 
-class Response_message(BaseModel):
+class ResponseMessage(BaseModel):
     message: str
 
 
-class User_message(BaseModel):
+class UserMessage(BaseModel):
     message: str
 
 
-class Job_message(BaseModel):
+class JobMessage(BaseModel):
     message: str

@@ -1,13 +1,13 @@
-from schemas.status_code_valid import Job_message
+from schemas.status_code_valid import JobMessage
 
 responses_204 = {
     204: {"description": "Zero rezult"},
 }
 responses_403 = {
-    403: {"model": Job_message, "description": "You have not power here"},
+    403: {"model": JobMessage, "description": "You have not power here"},
 }
 responses_422 = {
-    422: {"model": Job_message, "description": "Some proplem with validation"},
+    422: {"model": JobMessage, "description": "Some proplem with validation"},
 }
 
 responses_get_jobs = {
