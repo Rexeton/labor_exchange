@@ -55,8 +55,8 @@ async def test_get_responses_by_job_id_and_user_id(sa_session):
     current_responses = await responses_query.get_response_by_job_id_and_user_id(
         sa_session, job_id=job.id, user_id=worker.id
     )
-    assert current_responses.id == response.id
-    assert current_responses.id != response2.id
+    assert current_responses[0].id == response.id
+    assert current_responses[0].id != response2.id
 
 
 @pytest.mark.asyncio

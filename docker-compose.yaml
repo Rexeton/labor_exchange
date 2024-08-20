@@ -26,6 +26,38 @@ services:
     volumes:
        - test_postgres:/data/test_postgres
 
+  keycloak_postgres:
+    image: postgres
+    container_name: keycloak_postgres-laborexchange
+    environment:
+      POSTGRES_DB: "keycloak-labor-exchange"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      PGDATA: /data/keycloak_postgres
+    ports:
+      - "5434:5434"
+    volumes:
+      - keycloak_postgres:/data/keycloak_postgres
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.2
+    container_name: keycloak
+    command:
+      - start --auto-build --db postgres --hostname-strict-https false --hostname-strict false --proxy edge --http-enabled true --import-realm --spi-user-profile-legacy-user-profile-read-only-attributes *_RES_ACCESS_MODE
+    environment:
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5434/keycloak-labor-exchange
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+      KC_DB_SCHEMA: public
+      KC_FEATURES: preview
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"
+    depends_on:
+      - "keycloak_postgres"
+
 volumes:
     prod_postgres:
     test_postgres:
+    keycloak_postgres:

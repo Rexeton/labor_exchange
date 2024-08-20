@@ -28,9 +28,9 @@ async def get_response_by_id(db: AsyncSession, response_id: int) -> Optional[Res
 async def get_response_by_job_id_and_user_id(
     db: AsyncSession, job_id: int, user_id: int
 ) -> Optional[Response]:
-    query = select(Response).where(Response.job_id == job_id and Response.user_id == user_id)
+    query = select(Response).where(Response.job_id == job_id, Response.user_id == user_id)
     res = await db.execute(query)
-    return res.scalars().first()
+    return res.scalars().all()
 
 
 async def response_create(

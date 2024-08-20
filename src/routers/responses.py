@@ -111,15 +111,15 @@ async def patch_response(
     current_user: current user\n
     """
     Real_Validation.is_company_for_response(current_user.is_company)
-    responce_to_patch = await responses_queries.get_response_by_id(db=db, response_id=response.id)
-    await Real_Validation.patch_responses_validation(db, responce_to_patch)
+    response_to_patch = await responses_queries.get_response_by_id(db=db, response_id=response.id)
+    await Real_Validation.patch_responses_validation(db, response_to_patch)
     Real_Validation.element_not_current_user_for(
-        responce_to_patch.user_id, current_user.id, router_name="response", action_name="update"
+        response_to_patch.user_id, current_user.id, router_name="response", action_name="update"
     )
-    responce_to_patch.message = (
-        response.message if response.message is not None else responce_to_patch.message
+    response_to_patch.message = (
+        response.message if response.message is not None else response_to_patch.message
     )
-    new_response = await responses_queries.update(db=db, response=responce_to_patch)
+    new_response = await responses_queries.update(db=db, response=response_to_patch)
     return ResponsesSchema(**new_response.__dict__)
 
 
@@ -140,7 +140,7 @@ async def delete_response(
         db=db, job_id=job_id, user_id=current_user.id
     )
     Real_Validation.element_not_found(respose_to_delete)
-    delete_responses = await responses_queries.delete(db=db, response=respose_to_delete)
+    delete_responses = await responses_queries.delete(db=db, response=respose_to_delete[0])
     return ResponsesSchema(**delete_responses.__dict__)
 
 
@@ -157,10 +157,10 @@ async def delete_response_by_id(
     current_user: current user\n
     """
     Real_Validation.is_company_for_response(current_user.is_company)
-    responce_to_delete = await responses_queries.get_response_by_id(db=db, response_id=response_id)
-    Real_Validation.element_not_found(responce_to_delete)
+    response_to_delete = await responses_queries.get_response_by_id(db=db, response_id=response_id)
+    Real_Validation.element_not_found(response_to_delete)
     Real_Validation.element_not_current_user_for(
-        responce_to_delete.user_id, current_user.id, router_name="response", action_name="delete"
+        response_to_delete.user_id, current_user.id, router_name="response", action_name="delete"
     )
-    respose_to_delete = await responses_queries.delete(db=db, response=responce_to_delete)
+    respose_to_delete = await responses_queries.delete(db=db, response=response_to_delete)
     return ResponsesSchema(**respose_to_delete.__dict__)
