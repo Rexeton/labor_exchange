@@ -1,42 +1,48 @@
-from schemas.responses import ResponsesSchema
 from schemas.status_code_valid import Response_message
 
-responses = {
+responses_204 = {
     204: {"description": "Zero rezult"},
+}
+responses_403 = {
     403: {"model": Response_message, "description": "You have not power here"},
+}
+responses_422 = {
     422: {"model": Response_message, "description": "Some proplem with validation"},
 }
+responses_498 = {
+    498: {"model": Response_message, "description": "Special problem"},
+}
 responses_get_responses = {
-    **responses,
+    **responses_204,
+    **responses_403,
     200: {
         "description": "Get response\\es",
-        "model": ResponsesSchema,
     },
 }
 
 responses_post_responses = {
-    **responses,
+    **responses_403,
+    **responses_498,
     201: {
         "description": "response create",
-        "model": ResponsesSchema,
     },
     200: {
         "description": "response create",
-        "model": ResponsesSchema,
     },
 }
 
 responses_update_responses = {
-    **responses,
+    **responses_204,
+    **responses_403,
+    **responses_422,
     200: {
         "description": "response updated",
-        "model": ResponsesSchema,
     },
 }
 responses_delete_responses = {
-    **responses,
+    **responses_204,
+    **responses_403,
     200: {
         "description": "response delete",
-        "model": ResponsesSchema,
     },
 }
