@@ -26,6 +26,14 @@ class ResponsesCreateSchema(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "examples": [
+                {
+                    "job_id": 1,
+                    "message": "well_done",
+                }
+            ]
+        }
 
 
 class ResponsesUpdateSchema(BaseModel):
@@ -36,3 +44,11 @@ class ResponsesUpdateSchema(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "examples": [
+                {
+                    "id": 1,
+                    "message": "very_well_done",
+                }
+            ]
+        }
