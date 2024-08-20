@@ -48,10 +48,10 @@ class Real_Validation:
 
     @staticmethod
     async def post_responses_validation(db: AsyncSession, current_user: User, job_id: int) -> None:
-        is_double_responce = await responses_queries.get_response_by_job_id_and_user_id(
+        is_double_response = await responses_queries.get_response_by_job_id_and_user_id(
             db=db, job_id=job_id, user_id=current_user.id
         )
-        if is_double_responce:
+        if is_double_response:
             raise HTTPException(
                 status_code=498,
                 detail={"message": "You alredy have response for thise job"},
@@ -66,9 +66,9 @@ class Real_Validation:
 
     @staticmethod
     async def patch_responses_validation(
-        db: AsyncSession, responce_to_patch: Union[ResponsesCreateSchema, None]
+        db: AsyncSession, response_to_patch: Union[ResponsesCreateSchema, None]
     ) -> None:
-        if not responce_to_patch:
+        if not response_to_patch:
             raise HTTPException(
                 status_code=422,
                 detail={
@@ -78,6 +78,6 @@ class Real_Validation:
                 },
             )
 
-        is_active_job = await jobs_queries.get_by_id(db=db, job_id=responce_to_patch.job_id)
+        is_active_job = await jobs_queries.get_by_id(db=db, job_id=response_to_patch.job_id)
         if not is_active_job.is_active:
             raise HTTPException(status_code=499, detail={"message": "Job is not active"})
