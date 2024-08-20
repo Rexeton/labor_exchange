@@ -27,7 +27,7 @@ class Real_Validation:
         if flag:
             raise HTTPException(
                 status_code=403,
-                detail={
+                content={
                     "message": "Only not company user can read/create/update/delete there responses"
                 },
             )
