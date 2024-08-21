@@ -3,14 +3,33 @@ import os
 from enum import Enum
 
 from fastapi import HTTPException, Request, status
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, OAuth2AuthorizationCodeBearer
 from jose import jwt
+from keycloak import KeycloakOpenID
 from passlib.context import CryptContext
+
+from schemas.auth import AuthConfiguration
 
 REFRESH_TOKEN_EXPIRE_MINUTES = int(os.environ.get("REFRESH_TOKEN_EXPIRE_MINUTES"))
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
+
+SERVER_URL = os.environ.get("SERVER_URL")
+REALM = os.environ.get("REALM")
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+AUTHORIZATION_URL = os.environ.get("AUTHORIZATION_URL")
+TOKEN_URL = os.environ.get("TOKEN_URL")
+
+settings = AuthConfiguration(
+    server_url=SERVER_URL,
+    realm=REALM,
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    authorization_url=AUTHORIZATION_URL,
+    token_url=TOKEN_URL,
+)
 
 
 class tokenType(Enum):
@@ -61,3 +80,17 @@ class JWTBearer(HTTPBearer):
             return credentials.credentials
         else:
             raise exp
+
+
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl=settings.authorization_url,
+    tokenUrl=settings.token_url,
+)
+
+keycloak_openid = KeycloakOpenID(
+    server_url=settings.server_url,
+    client_id=settings.client_id,
+    realm_name=settings.realm,
+    client_secret_key=settings.client_secret,
+    verify=True,
+)
