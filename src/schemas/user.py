@@ -76,15 +76,13 @@ class UserCreateSchema(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "example": [
-                {
-                    "name": "Vitalii",
-                    "email": "user@example.com",
-                    "password": "stringst",
-                    "password2": "stringst",
-                    "is_company": False,
-                }
-            ]
+            "example": {
+                "name": "Vitalii",
+                "email": "user@example.com",
+                "password": "stringst",
+                "password2": "stringst",
+                "is_company": False,
+            }
         }
 
     @validator("password2")
