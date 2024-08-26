@@ -44,7 +44,7 @@ def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(password: str, hash: str) -> bool:
+def verify_password(password: str, hash: tokenType) -> bool:
     return pwd_context.verify(password, hash)
 
 
@@ -59,6 +59,7 @@ def create_token(data: dict, token_type: str) -> str:
 
 
 def decode_access_token(token: str):
+    print(123)
     try:
         encoded_jwt = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.JWSError:

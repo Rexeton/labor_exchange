@@ -22,10 +22,11 @@ async def get_current_user(
     db: AsyncSession = Depends(get_db), payload: dict = Depends(get_payload)
 ) -> User:
     cred_exception = HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN, detail="Credentials are not valid"
+        status_code=status.HTTP_102_PROCESSING, detail="Credentials are not valid"
     )
     try:
-        email = payload.get("email")
+        print(payload)
+        email = payload.get("sub")
     except Exception:
         raise cred_exception
     user = await user_queries.get_by_email(db=db, email=email)
