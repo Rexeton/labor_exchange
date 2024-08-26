@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, BaseSettings, EmailStr, Field
 
 
 class TokenSchema(BaseModel):
@@ -12,10 +12,10 @@ class LoginSchema(BaseModel):
     password: str
 
 
-class AuthConfiguration(BaseModel):
-    server_url: str
-    realm: str
-    client_id: str
-    client_secret: str
-    authorization_url: str
-    token_url: str
+class AuthConfiguration(BaseSettings):
+    server_url: str = Field(validation_alias="SERVER_URL")
+    realm: str = Field(validation_alias="REALM")
+    client_id: str = Field(validation_alias="CLIENT_ID")
+    client_secret: str = Field(validation_alias="CLIENT_SECRET")
+    authorization_url: str = Field(validation_alias="AUTHORIZATION_URL")
+    token_url: str = Field(validation_alias="TOKEN_URL")
