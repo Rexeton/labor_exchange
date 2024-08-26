@@ -7,7 +7,7 @@ from models import User
 from queries import user as user_queries
 
 
-async def get_payload(token: str = Security(oauth2_scheme)) -> dict:
+async def decode_token(token: str = Security(oauth2_scheme)) -> dict:
     try:
         return keycloak_openid.decode_token(token, validate=True)
     except Exception as e:
@@ -19,7 +19,7 @@ async def get_payload(token: str = Security(oauth2_scheme)) -> dict:
 
 
 async def get_current_user(
-    db: AsyncSession = Depends(get_db), payload: dict = Depends(get_payload)
+    db: AsyncSession = Depends(get_db), payload: dict[str:str] = Depends(decode_token)
 ) -> User:
     cred_exception = HTTPException(
         status_code=status.HTTP_102_PROCESSING, detail="Credentials are not valid"

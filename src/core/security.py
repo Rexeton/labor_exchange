@@ -59,7 +59,6 @@ def create_token(data: dict, token_type: str) -> str:
 
 
 def decode_access_token(token: str):
-    print(123)
     try:
         encoded_jwt = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.JWSError:
