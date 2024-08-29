@@ -25,7 +25,7 @@ class JobSchema(BaseModel):
     """Shema of model"""
 
     id: int
-    user_id: int
+    user_id: str
     title: str
     discription: str
     salary_from: int

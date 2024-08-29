@@ -18,19 +18,29 @@ async def decode_token(token: str = Security(oauth2_scheme)) -> dict:
         )
 
 
+def current_uset_is_company(role: str):
+    print(role["roles"])
+    print(type(["roles"]))
+    if "company" in role["roles"]:
+        return True
+    return False
+
+
 async def get_current_user(
     db: AsyncSession = Depends(get_db), payload: dict[str:str] = Depends(decode_token)
 ) -> User:
     cred_exception = HTTPException(
         status_code=status.HTTP_102_PROCESSING, detail="Credentials are not valid"
     )
-    print(123)
+    print(payload)
     try:
-        print(payload)
-        email = payload.get("email")
+        user = User(
+            id=payload.get("sub"),
+            email=payload.get("email"),
+            name=payload.get("preferred_username"),
+            is_company=current_uset_is_company(role=payload.get("realm_access")),
+        )
+        print(user)
     except Exception:
-        raise cred_exception
-    user = await user_queries.get_by_email(db=db, email=email)
-    if user is None:
         raise cred_exception
     return user

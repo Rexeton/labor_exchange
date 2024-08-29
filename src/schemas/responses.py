@@ -9,7 +9,7 @@ class ResponsesSchema(BaseModel):
     """Shema of model"""
 
     id: int
-    user_id: int
+    user_id: str
     job_id: int
     message: str
     created_at: datetime.datetime

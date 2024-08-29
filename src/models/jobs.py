@@ -1,6 +1,7 @@
 import datetime
 
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from db_settings import Base
@@ -15,7 +16,7 @@ class Job(Base):
         autoincrement=True,
         comment="Идентификатор вакансии",
     )
-    user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"), comment="Идентификатор пользователя")
+    user_id = sa.Column(sa.String, comment="Идентификатор пользователя")
     title = sa.Column(sa.String, comment="Название вакансии")
     discription = sa.Column(sa.String, comment="описание вакансии")
     salary_from = sa.Column(sa.Integer, comment="Зарплата от")
@@ -25,5 +26,4 @@ class Job(Base):
         sa.DateTime, comment="Дата создания записи", default=datetime.datetime.utcnow
     )
 
-    users = relationship("User", back_populates="jobs")
     responses = relationship("Response", back_populates="jobs")
