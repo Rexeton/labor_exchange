@@ -10,12 +10,10 @@ class UserFactory(AsyncSQLAlchemyModelFactory):
     class Meta:
         model = User
 
-    id = factory.Sequence(lambda n: n)
+    id = factory.Faker("pystr")
     name = factory.Faker("pystr")
-    email = factory.Faker("email")
-    hashed_password = factory.Faker("password")
+    email = factory.Faker("pystr")
     is_company = factory.Faker("pybool")
-    created_at = factory.LazyFunction(datetime.utcnow)
 
 
 class UserUpdateFactory(AsyncSQLAlchemyModelFactory):
@@ -23,7 +21,7 @@ class UserUpdateFactory(AsyncSQLAlchemyModelFactory):
         model = User
 
     name = factory.Faker("pystr")
-    email = factory.Faker("email")
+    email = factory.Faker("pystr")
     is_company = factory.Faker("pybool")
 
 
@@ -32,7 +30,7 @@ class UserCreateFactory(factory.BaseDictFactory):
         model = User
 
     name = factory.Faker("pystr")
-    email = factory.Faker("email")
-    password = factory.Faker("password")
+    email = factory.Faker("pystr")
+    password = factory.Faker("pystr")
     password2 = password
     is_company = factory.Faker("pybool")

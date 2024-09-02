@@ -1,5 +1,5 @@
 responses_204 = {
-    204: {"description": "Zero rezult"},
+    204: {"description": "No content"},
 }
 
 responses_get_user = {
