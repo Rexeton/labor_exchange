@@ -54,7 +54,6 @@ async def test_put_job_real(client_app, current_user, sa_session):
         "/jobs",
         json={"id": job.id, "title": job.title + "_update"},
     )
-    print(response.content)
     assert response.status_code == 200
 
 

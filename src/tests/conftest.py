@@ -7,9 +7,9 @@ from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from core.security import create_token
+from core.security import create_token, decode_access_token
 from db_settings import SQLALCHEMY_DATABASE_URL_TEST as SQLALCHEMY_DATABASE_URL
-from dependencies import get_db
+from dependencies import decode_token, get_db
 from fixtures.jobs import JobFactory
 from fixtures.responses import ResponseFactory
 from fixtures.users import UserFactory
@@ -79,9 +79,9 @@ def setup_factories(sa_session: AsyncSession) -> None:
 
 
 @pytest_asyncio.fixture()
-async def client_app(sa_session: AsyncSession, access_token: TokenSchema):
+async def client_app(sa_session: AsyncSession, access_token):
     app.dependency_overrides[get_db] = lambda: sa_session
-
+    app.dependency_overrides[decode_token] = lambda: decode_access_token(access_token.access_token)
     async with AsyncClient(app=app, base_url="http://test") as client:
         client.headers["Authorization"] = f"Bearer {access_token.access_token}"
         yield client

@@ -1,7 +1,7 @@
 from schemas.status_code_valid import ResponseMessage
 
 responses_204 = {
-    204: {"description": "Zero rezult"},
+    204: {"description": "No content"},
 }
 responses_403 = {
     403: {"model": ResponseMessage, "description": "You have not power here"},

@@ -25,7 +25,7 @@ class JobSchema(BaseModel):
     """Shema of model"""
 
     id: int
-    user_id: int
+    user_id: str
     title: str
     discription: str
     salary_from: int
@@ -36,18 +36,16 @@ class JobSchema(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "example": [
-                {
-                    "id": 1,
-                    "user_id": 2,
-                    "title": "Povar",
-                    "discription": "Salat rezat",
-                    "salary_from": 0,
-                    "salary_to": 10,
-                    "is_active": True,
-                    "created_at": "2024-08-06T20:41:48.521Z",
-                }
-            ]
+            "example": {
+                "id": 1,
+                "user_id": 2,
+                "title": "Povar",
+                "discription": "Salat rezat",
+                "salary_from": 0,
+                "salary_to": 10,
+                "is_active": True,
+                "created_at": "2024-08-06T20:41:48.521Z",
+            }
         }
 
 
@@ -65,15 +63,13 @@ class JobCreateSchema(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "example": [
-                {
-                    "title": "Povar",
-                    "discription": "Salat rezat",
-                    "salary_from": 0,
-                    "salary_to": 10,
-                    "is_active": True,
-                }
-            ]
+            "example": {
+                "title": "Povar",
+                "discription": "Salat rezat",
+                "salary_from": 0,
+                "salary_to": 10,
+                "is_active": True,
+            }
         }
 
 
@@ -92,14 +88,12 @@ class JobUpdateSchema(BaseModel):
     class Config:
         orm_mode = True
         schema_extra = {
-            "example": [
-                {
-                    "id": 1,
-                    "title": "Povar",
-                    "discription": "Salat rezat",
-                    "salary_from": 0,
-                    "salary_to": 10,
-                    "is_active": True,
-                }
-            ]
+            "example": {
+                "id": 1,
+                "title": "Povar",
+                "discription": "Salat rezat",
+                "salary_from": 0,
+                "salary_to": 10,
+                "is_active": True,
+            }
         }
