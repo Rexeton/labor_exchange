@@ -1,16 +1,16 @@
-"""деприоритет схемы User
+"""заново делаю
 
-Revision ID: 30b5b0b69729
-Revises: 
-Create Date: 2024-08-29 23:52:09.103227
+Revision ID: 84e30ca74187
+Revises: b9fa3ef4ce5f
+Create Date: 2024-11-26 00:19:29.228288
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = "30b5b0b69729"
-down_revision = None
+revision = "84e30ca74187"
+down_revision = "b9fa3ef4ce5f"
 branch_labels = None
 depends_on = None
 

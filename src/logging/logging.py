@@ -1,7 +1,7 @@
 # stdlib
 import datetime
 import json
-import logging.handlers
+import logging
 
 # thirdparty
 from pythonjsonlogger import jsonlogger
@@ -65,27 +65,22 @@ class GPNJsonFormatter(jsonlogger.JsonFormatter):
 
         log_record["asctime"] = datetime.datetime.utcfromtimestamp(record.created)
 
-        log_params_model = GPNLogParamsEvents(
-            system_log_type="user" if "user_id" in extra_fields else "application",
+        log_params_model = GPNLogParamsExtended(
             user_id=extra_fields.get("user_id"),
             session_id=extra_fields.get("session_id"),
-            company=extra_fields.get("company_name"),
-            ms=extra_fields.get("ms"),
-            project_name=settings.project_name,
-            level=record.levelname,
-            message=message
-            if "req_method" not in extra_fields or record.levelname == "ERROR"
-            else "Обработан http запрос",
-            request=extra_fields.get("method"),
-            http_referrer=extra_fields.get("url"),
-            response_status=extra_fields.get("response_status"),
+            company=extra_fields.get("company"),
+            status=extra_fields.get("status"),
+            request=extra_fields.get("request"),
+            http_referrer=extra_fields.get("http_referrer"),
             request_body=extra_fields.get("request_body"),
             response_body=extra_fields.get("response_body"),
+            elapsed_time=extra_fields.get("elapsed_time"),
             request_id=extra_fields.get("request_id"),
-            well_id=log_record.get("well_id"),
-            event_id=log_record.get("event_id"),
-            process_name=record.processName,
-            thread_name=record.threadName,
+            _request_start=extra_fields.get("_request_start"),
+            method=extra_fields.get("method"),
+            url=extra_fields.get("url"),
+            base_url=extra_fields.get("base_url"),
+            query_params=extra_fields.get("query_params"),
         )
         log_record["msg"] = message
 

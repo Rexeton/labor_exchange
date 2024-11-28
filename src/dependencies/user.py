@@ -18,9 +18,7 @@ async def decode_token(token: str = Security(oauth2_scheme)) -> dict:
         )
 
 
-def current_uset_is_company(role: str):
-    print(role["roles"])
-    print(type(["roles"]))
+def current_user_is_company(role: str):
     if "company" in role["roles"]:
         return True
     return False
@@ -32,15 +30,13 @@ async def get_current_user(
     cred_exception = HTTPException(
         status_code=status.HTTP_102_PROCESSING, detail="Credentials are not valid"
     )
-    print(payload)
     try:
         user = User(
             id=payload.get("sub"),
             email=payload.get("email"),
             name=payload.get("preferred_username"),
-            is_company=current_uset_is_company(role=payload.get("realm_access")),
+            is_company=current_user_is_company(role=payload.get("realm_access")),
         )
-        print(user)
     except Exception:
         raise cred_exception
     return user
