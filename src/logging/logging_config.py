@@ -29,12 +29,13 @@ LOGGING = {
             "class": "logging.FileHandler",
             "formatter": "json_formatter",
             "filename": Path("./labor_exchange/labor_exchange.log"),
+            "mode": "w",
         },
     },
     "root": {
         "level": "INFO",
         # хендлеры устанавливаются далее в функциях
-        "handlers": ["file_extended_handler"],
+        "handlers": ["file_extended_handler", "console_json_handler"],
     },
     "loggers": {
         # отключаем спам логами при генерации данных factoryboy
