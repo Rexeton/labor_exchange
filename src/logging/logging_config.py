@@ -1,5 +1,6 @@
 # stdlib
 from copy import deepcopy
+from pathlib import Path
 
 LOGGING = {
     "version": 1,
@@ -24,11 +25,16 @@ LOGGING = {
             "formatter": "extended_formatter",
             "stream": "ext://sys.stdout",
         },
+        "file_extended_handler": {
+            "class": "logging.FileHandler",
+            "formatter": "json_formatter",
+            "filename": Path("./labor_exchange/labor_exchange.log"),
+        },
     },
     "root": {
         "level": "INFO",
         # хендлеры устанавливаются далее в функциях
-        "handlers": ["console_json_handler"],
+        "handlers": ["file_extended_handler"],
     },
     "loggers": {
         # отключаем спам логами при генерации данных factoryboy
