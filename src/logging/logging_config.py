@@ -1,16 +1,17 @@
 # stdlib
 from copy import deepcopy
+from pathlib import Path
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "json_formatter": {
-            "()": "<path_to_logging_package>.logger.GPNJsonFormatter",
+            "()": "src.logging.logging.GPNJsonFormatter",
             "json_ensure_ascii": False,
         },
         "extended_formatter": {
-            "()": "<path_to_logging_package>.logger.ExtraFormatter",
+            "()": "src.logging.logging.ExtraFormatter",
         },
     },
     "handlers": {
@@ -24,26 +25,32 @@ LOGGING = {
             "formatter": "extended_formatter",
             "stream": "ext://sys.stdout",
         },
+        "file_extended_handler": {
+            "class": "logging.FileHandler",
+            "formatter": "json_formatter",
+            "filename": Path("./labor_exchange/labor_exchange.log"),
+            "mode": "w",
+        },
     },
     "root": {
         "level": "INFO",
         # хендлеры устанавливаются далее в функциях
-        "handlers": [],
+        "handlers": ["file_extended_handler", "console_json_handler"],
     },
     "loggers": {
         # отключаем спам логами при генерации данных factoryboy
         "factory": {"level": "WARN"},
         "factory.generate": {"level": "WARN"},
         "faker.factory": {"level": "WARN"},
-        "gunicorn.access": {"level": "INFO", "handlers": []},
+        "gunicorn.access": {"level": "INFO", "handlers": ["console_json_handler"]},
     },
     "filters": {
         # Уровень debug
-        "debugFilter": {"()": "<path_to_logging_package>.logger.LogLevelFilter", "logs_level": 10},
+        "debugFilter": {"()": "src.logging.logging.LogLevelFilter", "logs_level": 10},
         # Уровень info
-        "infoFilter": {"()": "<path_to_logging_package>.logger.LogLevelFilter", "logs_level": 20},
+        "infoFilter": {"()": "src.logging.logging.LogLevelFilter", "logs_level": 20},
         # Уровень error
-        "errorFilter": {"()": "<path_to_logging_package>.logger.LogLevelFilter", "logs_level": 40},
+        "errorFilter": {"()": "src.logging.logging.LogLevelFilter", "logs_level": 40},
     },
 }
 
@@ -55,16 +62,10 @@ def get_raw_output_logging_config() -> dict:
             "console_extended_handler",
         ]
     )
-    logger_config["loggers"]["gunicorn.access"]["handlers"].extend(
-        [
-            "console_extended_handler",
-        ]
-    )
     return logger_config
 
 
 def get_json_output_logging_config() -> dict:
     logger_config = deepcopy(LOGGING)
     logger_config["root"]["handlers"].append("console_json_handler")
-    logger_config["loggers"]["gunicorn.access"]["handlers"].append("console_json_handler")
     return logger_config
