@@ -1,13 +1,22 @@
 import logging
-import logging.config
 from datetime import datetime
 
 import uvicorn
 from fastapi import FastAPI, Request
 
+from logging_new.logging_config import LOGGING
+from logging_new.middlewares import LogRequestInfoMiddleware, SetRequestContextMiddleware
 from routers import auth_router, jobs_router, responses_router, user_router
-from src.logging.logging_config import LOGGING
-from src.logging.middlewares import LogRequestInfoMiddleware, SetRequestContextMiddleware
+
+# import os, sys
+# current_dir = os.path.dirname(os.path.realpath(__file__))
+# main_folder_path = os.path.dirname(current_dir)
+# parent_dir = os.path.dirname(main_folder_path)
+# sys.path.append(os.path.dirname(parent_dir))
+# sys.path.append(current_dir)
+# sys.path.append(parent_dir)
+# sys.path.append(main_folder_path)
+
 
 app = FastAPI()
 app.include_router(auth_router)

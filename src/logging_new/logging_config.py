@@ -7,11 +7,11 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "json_formatter": {
-            "()": "src.logging.logging.GPNJsonFormatter",
+            "()": "logging_new.logging.GPNJsonFormatter",
             "json_ensure_ascii": False,
         },
         "extended_formatter": {
-            "()": "src.logging.logging.ExtraFormatter",
+            "()": "logging_new.logging.ExtraFormatter",
         },
     },
     "handlers": {
@@ -46,11 +46,11 @@ LOGGING = {
     },
     "filters": {
         # Уровень debug
-        "debugFilter": {"()": "src.logging.logging.LogLevelFilter", "logs_level": 10},
+        "debugFilter": {"()": "logging_new.logging.LogLevelFilter", "logs_level": 10},
         # Уровень info
-        "infoFilter": {"()": "src.logging.logging.LogLevelFilter", "logs_level": 20},
+        "infoFilter": {"()": "logging_new.logging.LogLevelFilter", "logs_level": 20},
         # Уровень error
-        "errorFilter": {"()": "src.logging.logging.LogLevelFilter", "logs_level": 40},
+        "errorFilter": {"()": "logging_new.logging.LogLevelFilter", "logs_level": 40},
     },
 }
 

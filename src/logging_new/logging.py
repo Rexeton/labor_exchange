@@ -7,8 +7,8 @@ import logging
 from pythonjsonlogger import jsonlogger
 
 # project
-from src.logging.global_fastapi import g
-from src.logging.models import GPNLogParamsExtended
+from src.logging_new.global_fastapi import g
+from src.logging_new.models import GPNLogParamsExtended
 
 # from <core_module>.settings import settings
 

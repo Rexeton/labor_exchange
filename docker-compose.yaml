@@ -111,7 +111,14 @@ services:
       - elk
     depends_on:
       - elasticsearch
-
+  labor_exchange:
+      build:
+        context: .
+        dockerfile: ./docker/Dockerfile
+      env_file:
+        - ./.env
+      ports:
+        - "8080:8080"
 volumes:
     prod_postgres:
     test_postgres:

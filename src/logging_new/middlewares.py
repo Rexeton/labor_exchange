@@ -12,11 +12,10 @@ from starlette.concurrency import iterate_in_threadpool
 from starlette.requests import Request
 from starlette.types import Message, Scope
 
-from models import User
-
 # project
-from src.dependencies.user import get_current_user
-from src.logging.global_fastapi import g, set_extra_for_logs
+from dependencies.user import get_current_user
+from logging_new.global_fastapi import g, set_extra_for_logs
+from models import User
 
 logger = logging.getLogger(__name__)
 
