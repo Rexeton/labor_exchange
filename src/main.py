@@ -17,9 +17,8 @@ from routers import auth_router, jobs_router, responses_router, user_router
 # sys.path.append(parent_dir)
 # sys.path.append(main_folder_path)
 
-
 app = FastAPI()
-app.include_router(auth_router)
+# app.include_router(auth_router)
 # app.include_router(user_router)
 app.include_router(jobs_router)
 app.include_router(responses_router)

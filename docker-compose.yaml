@@ -1,21 +1,24 @@
 version: '3'
-services:
-  prod_postgres:
-    container_name: prod_postgres-laborexchange
-    image: postgres
-    environment:
-      POSTGRES_DB: "labor-exchange"
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "admin"
-      PGDATA: /data/prod_postgres
-    ports:
-      - "5432:5432"
-    volumes:
-       - prod_postgres:/data/prod_postgres
+x-def-logging: &default-logging
+  logging:
+    # Указываем, какой драйвер использовать
+    driver: "loki"
+    options:
+      # Адрес Loki, куда складывать логи
+      # Обратите внимание, что здесь используется не имя сервиса loki, а локальный хост, на который проброшен порт Loki,
+      # это сделано потому, что логи будет писать docker engine, котрый расположен на хостовой машине,
+      # и он не знает имени хоста контейнера Loki, которое ему присвоил compose во внутренней сети проекта.
+      loki-url: "http://localhost:3100/loki/api/v1/push"
+      loki-batch-size: "100"
+      loki-retries: 2
+      loki-max-backoff: 1000ms
+      loki-timeout: 1s
 
+services:
   test_postgres:
     container_name: test_postgres-laborexchange
     image: postgres
+    <<: *default-logging
     environment:
       POSTGRES_DB: "test-labor-exchange"
       POSTGRES_USER: "admin"
@@ -28,6 +31,7 @@ services:
 
   keycloak_postgres:
     image: postgres
+    <<: *default-logging
     container_name: keycloak_postgres-laborexchange
     environment:
       POSTGRES_DB: "keycloak-labor-exchange"
@@ -59,6 +63,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.16.1
+    <<: *default-logging
     volumes:
       - ./configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - ./docker_volumes/elasticsearch/data:/usr/share/elasticsearch/data
@@ -67,14 +72,13 @@ services:
       ELASTIC_USERNAME: "elastic"
       ELASTIC_PASSWORD: "MyPw123"
       discovery.type: single-node
-    networks:
-      - elk
     ports:
       - "9200:9200"
       - "9300:9300"
 
   logstash:
     image: logstash:7.16.2
+    <<: *default-logging
     volumes:
       - ./configs/logstash/config.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./configs/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
@@ -85,45 +89,106 @@ services:
       - "5044:5044"
       - "5000:5000"
       - "9600:9600"
-    networks:
-      - elk
     depends_on:
       - elasticsearch
 
   kibana:
     image: kibana:7.16.1
+    <<: *default-logging
     depends_on:
       - elasticsearch
     volumes:
       - ./configs/kibana/config.yml:/usr/share/kibana/config/kibana.yml:ro
-    networks:
-      - elk
     ports:
       - "5601:5601"
 
   beats:
     image: elastic/filebeat:7.16.2
+    <<: *default-logging
     command: filebeat -e -strict.perms=false
     volumes:
       - ./configs/filebeat/config.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./labor_exchange/:/labor_exchange/:ro
-    networks:
-      - elk
     depends_on:
       - elasticsearch
+
   labor_exchange:
-      build:
-        context: .
-        dockerfile: ./docker/Dockerfile
-      env_file:
-        - ./.env
-      ports:
-        - "8080:8080"
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    <<: *default-logging
+    env_file:
+      - ./.env
+    ports:
+      - "8080:8080"
+    command: bash -c "uvicorn main:app --port 8080 --host 0.0.0.0"
+
+  prod_postgres:
+    container_name: prod_postgres-laborexchange
+    image: postgres
+    <<: *default-logging
+    environment:
+      POSTGRES_DB: "labor-exchange"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      PGDATA: /data/prod_postgres
+    ports:
+      - "5432:5432"
+    volumes:
+       - prod_postgres:/data/prod_postgres
+
+
+  prometheus:
+    image: prom/prometheus
+    <<: *default-logging
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    hostname: grafana
+    <<: *default-logging
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - TZ=${SYSTEM_TIMEZONE:-Europe/Moscow}
+    # Добавим проброс каталога файловой системы в файловую систему контейнра 
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+
+  loki:
+    hostname: loki
+    image: grafana/loki:2.9.0
+    environment:
+      TZ: ${SYSTEM_TIMEZONE:-Europe/Moscow}
+    # Мы пробросили конфигурацию в файловую систему контейнера
+    volumes:
+      - ./loki/retention-config.yaml:/etc/loki/retention-config.yaml
+    ports:
+      - "3100:3100"
+    # и модифицировали команду запуска, чтобы использовалась наша конфигурация
+    command: -config.file=/etc/loki/retention-config.yaml
 volumes:
     prod_postgres:
     test_postgres:
     keycloak_postgres:
-
-networks:
-  elk:
-    driver: bridge
+    prometheus_data:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: ./prometheus_data
+    grafana_data:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: ./grafana_data
